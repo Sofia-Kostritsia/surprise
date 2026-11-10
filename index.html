@@ -16,10 +16,49 @@ header{text-align:center;margin:4px auto 22px;position:relative;z-index:1}
 h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.03;letter-spacing:-.05em;margin:12px 0 8px;text-shadow:0 4px 24px #ff762b44}
 header p{color:var(--muted);margin:0;font-size:1.02rem}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,390px);gap:24px;align-items:center}
-.art{position:relative;isolation:isolate}
-.art img{width:100%;display:block;border-radius:24px;filter:drop-shadow(0 18px 32px #0009);animation:enter .8s cubic-bezier(.2,.8,.2,1) both}
-.art:after{content:"BOOM!";position:absolute;right:-4px;bottom:3%;z-index:-1;color:#ff762b;font-weight:1000;font-size:clamp(2.5rem,7vw,5rem);transform:rotate(-12deg);text-shadow:0 4px 0 #63250f}
-@keyframes enter{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+
+.art{
+ position:relative;isolation:isolate;min-height:570px;width:100%;
+ border-radius:24px;
+ background:
+  radial-gradient(circle at 75% 75%,#ff762b26,transparent 35%),
+  radial-gradient(circle at 15% 20%,#ff762b20,transparent 30%);
+}
+.art:before{
+ content:"";position:absolute;inset:8% 5%;
+ border:1px dashed #ff9b5740;border-radius:48% 42% 50% 38%;
+ transform:rotate(-8deg);pointer-events:none
+}
+.sticker{
+ position:absolute;display:block;padding:0;border:0;background:transparent;
+ cursor:grab;touch-action:none;user-select:none;
+ filter:drop-shadow(0 12px 15px #0009);
+ transition:filter .2s, transform .25s;
+ animation:stickerBob 4.5s ease-in-out infinite;
+}
+.sticker img{display:block;width:100%;height:auto;pointer-events:none}
+.sticker:focus-visible{outline:2px solid var(--orange);outline-offset:5px;border-radius:18px}
+.sticker:hover{filter:drop-shadow(0 0 18px #ff762b99);z-index:10}
+.sticker:active{cursor:grabbing}
+.sticker.hero{width:59%;right:-1%;top:1%;transform:rotate(4deg);animation-delay:-1s}
+.sticker.polaroids{width:61%;left:-7%;top:37%;transform:rotate(-7deg);animation-delay:-2.2s}
+.sticker.chibi{width:43%;right:-2%;bottom:0;transform:rotate(7deg);animation-delay:-.5s}
+.sticker.hero:hover{transform:rotate(1deg) scale(1.07)}
+.sticker.polaroids:hover{transform:rotate(-2deg) scale(1.08)}
+.sticker.chibi:hover{transform:rotate(1deg) scale(1.1)}
+.sticker.popped{animation:stickerPop .55s ease}
+@keyframes stickerBob{0%,100%{translate:0 0}50%{translate:0 -11px}}
+@keyframes stickerPop{0%{scale:1}35%{scale:1.22;filter:drop-shadow(0 0 28px #ff762b)}70%{scale:.94}100%{scale:1}}
+.burst{
+ position:absolute;z-index:20;pointer-events:none;color:#ff8b35;
+ font-size:32px;font-weight:1000;text-shadow:0 0 16px #ff762b;
+ animation:burstOut .65s ease forwards
+}
+@keyframes burstOut{0%{opacity:0;transform:scale(.3) rotate(-20deg)}25%{opacity:1}100%{opacity:0;transform:scale(1.7) rotate(25deg) translateY(-25px)}}
+.sticker-tip{
+ position:absolute;left:5%;bottom:3%;color:#ffbd8e;
+ font-size:.78rem;letter-spacing:.04em;opacity:.85
+}
 .card{background:linear-gradient(145deg,#30272bdc,#19171bea);border:1px solid #765d52;border-radius:26px;padding:clamp(22px,4vw,34px);box-shadow:0 22px 70px #0008, inset 0 1px #ffffff18;backdrop-filter:blur(14px);position:relative;overflow:hidden}
 .card:before{content:"";position:absolute;inset:-1px auto auto -20%;width:55%;height:3px;background:linear-gradient(90deg,transparent,var(--orange),transparent);animation:shine 4s linear infinite}
 @keyframes shine{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
@@ -42,7 +81,15 @@ button{border:0;border-radius:14px;padding:13px 20px;font:inherit;font-weight:85
 .success{display:none;text-align:center}.success .big{font-size:3rem}.success p{color:var(--muted);line-height:1.6}
 .status{min-height:22px;color:var(--orange2);font-size:.86rem;margin-top:12px}
 footer{text-align:center;color:#938780;font-size:.75rem;margin-top:25px}
-@media(max-width:760px){.layout{grid-template-columns:1fr}.art{max-width:450px;margin:0 auto;order:2}.card{order:1}.wrap{padding-top:20px}header{margin-bottom:20px}}
+@media(max-width:760px){
+ .layout{grid-template-columns:1fr}
+ .art{max-width:470px;min-height:490px;width:100%;margin:0 auto;order:2}
+ .sticker.hero{width:58%;right:1%;top:0}
+ .sticker.polaroids{width:58%;left:-2%;top:38%}
+ .sticker.chibi{width:41%;right:0;bottom:0}
+ .card{order:1}.wrap{padding-top:20px}header{margin-bottom:20px}
+}
+@media(max-width:420px){.art{min-height:350px}.sticker-tip{font-size:.68rem}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -74,13 +121,70 @@ footer{text-align:center;color:#938780;font-size:.75rem;margin-top:25px}
     <div class="actions" id="actions"><button class="secondary" type="button" id="back" disabled>← Назад</button><button class="primary" type="button" id="next">Далі →</button></div>
   </form>
 </div>
-<div class="art"><img src="bakugo-art.png" alt="Кацукі Бакуґо з подарунком у стилі аніме"></div>
+<div class="art" id="stickerStage" aria-label="Інтерактивні стікери Кацукі Бакуґо">
+  <button class="sticker hero" type="button" aria-label="Бакуґо — натисни або перетягни">
+    <img src="bakugo-hero.png" alt="Бакуґо у бойовому образі">
+  </button>
+  <button class="sticker polaroids" type="button" aria-label="Портрети Бакуґо — натисни або перетягни">
+    <img src="bakugo-polaroids.png" alt="Портрети Бакуґо в стилі полароїдів">
+  </button>
+  <button class="sticker chibi" type="button" aria-label="Чібі Бакуґо з подарунком — натисни або перетягни">
+    <img src="bakugo-chibi.png" alt="Чібі Бакуґо з подарунком">
+  </button>
+  <div class="sticker-tip">✦ натискай на стікери або перетягуй їх ✦</div>
+</div>
 </div>
 <footer>зроблено з вибуховою турботою ♡</footer>
 </div>
 <script>
 (() => {
-  const SCRIPT_URL = "https://docs.google.com/spreadsheets/d/1VO8qU62UG1tQCokDQ2CtErQa2akHwKqZE44_Rjc6jm4/edit?gid=0#gid=0";
+  // Інтерактивність стікерів: натискання = вибух, перетягування = рух по сцені.
+  const stage = document.getElementById('stickerStage');
+  if (stage) {
+    stage.querySelectorAll('.sticker').forEach(sticker => {
+      let startX=0, startY=0, originX=0, originY=0, moved=false;
+      sticker.addEventListener('pointerdown', e => {
+        const r=sticker.getBoundingClientRect();
+        const sr=stage.getBoundingClientRect();
+        startX=e.clientX; startY=e.clientY;
+        originX=r.left-sr.left; originY=r.top-sr.top;
+        moved=false;
+        sticker.setPointerCapture(e.pointerId);
+      });
+      sticker.addEventListener('pointermove', e => {
+        if (!sticker.hasPointerCapture(e.pointerId)) return;
+        const dx=e.clientX-startX, dy=e.clientY-startY;
+        if (Math.abs(dx)+Math.abs(dy)>7) moved=true;
+        if (moved) {
+          const maxX=stage.clientWidth-sticker.offsetWidth;
+          const maxY=stage.clientHeight-sticker.offsetHeight;
+          sticker.style.left=Math.max(0,Math.min(maxX,originX+dx))+'px';
+          sticker.style.top=Math.max(0,Math.min(maxY,originY+dy))+'px';
+          sticker.style.right='auto'; sticker.style.bottom='auto';
+        }
+      });
+      sticker.addEventListener('pointerup', () => {
+        if (!moved) {
+          sticker.classList.remove('popped');
+          void sticker.offsetWidth;
+          sticker.classList.add('popped');
+          const burst=document.createElement('span');
+          burst.className='burst'; burst.textContent=['BOOM!','💥','КА-BOOM!','✦'][Math.floor(Math.random()*4)];
+          const r=sticker.getBoundingClientRect(), sr=stage.getBoundingClientRect();
+          burst.style.left=(r.left-sr.left+r.width*.45)+'px';
+          burst.style.top=(r.top-sr.top+r.height*.35)+'px';
+          stage.appendChild(burst);
+          setTimeout(()=>burst.remove(),700);
+        }
+      });
+    });
+  }
+})();
+</script>
+<script>
+(() => {
+  // Встав сюди URL вебзастосунку Apps Script після розгортання.
+  const SCRIPT_URL = "ВСТАВТЕ_URL_ВЕБЗАСТОСУНКУ_APPS_SCRIPT";
   const form=document.getElementById('survey'),steps=[...document.querySelectorAll('.step')],dots=[...document.querySelectorAll('.dot')];
   const next=document.getElementById('next'),back=document.getElementById('back'),actions=document.getElementById('actions');
   let route=[0,2,3],index=0;
@@ -88,8 +192,8 @@ footer{text-align:center;color:#938780;font-size:.75rem;margin-top:25px}
   function setRoute(){route=[0,val('kind')==='Спланований подарунок'?1:2,3];}
   function render(){
     steps.forEach(s=>s.classList.remove('active'));steps[route[index]].classList.add('active');
-    dots.forEach((d,i)=>d.classList.toggle('active',i<=index));
-    document.getElementById('counter').textContent=`Питання ${index+1} з ${route.length}`;
+    dots.forEach((d,i)=>d.classList.toggle('active',i<=route[index]));
+    document.getElementById('counter').textContent=`Питання ${route[index]+1} з 4`;
     back.disabled=index===0;next.textContent=index===route.length-1?'Відправити 💥':'Далі →';
   }
   form.addEventListener('change',e=>{if(e.target.name==='kind'){setRoute();}});
