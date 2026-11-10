@@ -210,7 +210,7 @@ footer{text-align:center;color:#938780;font-size:.75rem;margin-top:25px}
     if(active===2&&!val('surprise'))return alert('Обери, що тобі більше до душі 😊');
     if(active===3&&!val('vibe'))return alert('Обери настрій подарунка 😊');
     if(index<route.length-1){index++;render();return;}
-    if(!SCRIPT_URL.startsWith('https://script.google.com/macros/s/'))return alert('Потрібно спочатку вставити URL Apps Script у код сайту (SCRIPT_URL).');
+    if(!SCRIPT_URL.startsWith('https://script.google.com/u/0/home/projects/1O6vAwIc9eZFymHdW03TijeuDq-sTJc03swhlLxhAiUHXOZ5edlDuF8Is/edit'))return alert('Потрібно спочатку вставити URL Apps Script у код сайту (SCRIPT_URL).');
     next.disabled=true;next.textContent='Відправляю…';
     try{
       // text/plain + no-cors надсилає POST без CORS preflight до Apps Script.
