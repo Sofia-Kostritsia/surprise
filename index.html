@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Подарункове опитування ✦ Bakugo edition</title>
+<style>
+:root{--bg:#111014;--panel:#211d22;--ink:#fff8f1;--muted:#c2b6b0;--orange:#ff762b;--orange2:#ffb16d;--line:#5a4b48}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Inter,ui-rounded,"Segoe UI",system-ui,sans-serif;background:radial-gradient(ellipse at 8% 12%,#7d301b55,transparent 30%),radial-gradient(ellipse at 90% 88%,#a84d1d44,transparent 30%),var(--bg);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;background-image:radial-gradient(#ff9b57 1px,transparent 1px);background-size:18px 18px;mask-image:linear-gradient(90deg,#000,transparent 45%,#000)}
+.spark{position:fixed;color:#ff7b2f;font-size:25px;opacity:.7;pointer-events:none;animation:float 5s ease-in-out infinite}.s1{top:12%;left:4%}.s2{top:70%;right:4%;animation-delay:1.3s}.s3{top:42%;right:8%;animation-delay:2s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-16px) rotate(18deg)}}
+.wrap{width:min(1100px,100%);margin:auto;padding:26px 18px 48px;position:relative}
+header{text-align:center;margin:4px auto 22px;position:relative;z-index:1}
+.kicker{color:var(--orange2);letter-spacing:.2em;text-transform:uppercase;font-size:.72rem;font-weight:900}
+h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.03;letter-spacing:-.05em;margin:12px 0 8px;text-shadow:0 4px 24px #ff762b44}
+header p{color:var(--muted);margin:0;font-size:1.02rem}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,390px);gap:24px;align-items:center}
+.art{position:relative;isolation:isolate}
+.art img{width:100%;display:block;border-radius:24px;filter:drop-shadow(0 18px 32px #0009);animation:enter .8s cubic-bezier(.2,.8,.2,1) both}
+.art:after{content:"BOOM!";position:absolute;right:-4px;bottom:3%;z-index:-1;color:#ff762b;font-weight:1000;font-size:clamp(2.5rem,7vw,5rem);transform:rotate(-12deg);text-shadow:0 4px 0 #63250f}
+@keyframes enter{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.card{background:linear-gradient(145deg,#30272bdc,#19171bea);border:1px solid #765d52;border-radius:26px;padding:clamp(22px,4vw,34px);box-shadow:0 22px 70px #0008, inset 0 1px #ffffff18;backdrop-filter:blur(14px);position:relative;overflow:hidden}
+.card:before{content:"";position:absolute;inset:-1px auto auto -20%;width:55%;height:3px;background:linear-gradient(90deg,transparent,var(--orange),transparent);animation:shine 4s linear infinite}
+@keyframes shine{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+.progress{display:flex;gap:9px;margin-bottom:12px}.dot{height:7px;flex:1;border-radius:9px;background:#51464a;transition:.3s}.dot.active{background:var(--orange);box-shadow:0 0 14px #ff762b99}
+.counter{font-size:.78rem;color:var(--orange2);font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:20px}
+.step{display:none;animation:slide .35s ease}.step.active{display:block}@keyframes slide{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+legend{font-size:clamp(1.15rem,2.6vw,1.45rem);font-weight:800;line-height:1.35;margin:0 0 20px}
+fieldset{border:0;padding:0;margin:0}.choices{display:grid;gap:11px}
+.option{display:flex;align-items:center;gap:12px;padding:15px;border:1px solid var(--line);border-radius:15px;background:#ffffff06;cursor:pointer;transition:.2s}
+.option:hover{border-color:var(--orange);transform:translateY(-2px);background:#ff762b12}
+.option:has(input:checked){border-color:var(--orange);background:#ff762b1c;box-shadow:inset 0 0 0 1px #ff762b55}
+input[type=radio]{accent-color:var(--orange);width:18px;height:18px;flex:none}
+textarea{width:100%;min-height:120px;resize:vertical;border:1px solid var(--line);border-radius:15px;padding:15px;background:#171417;color:white;font:inherit;outline:none}
+textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff762b22}
+.hint{font-size:.84rem;color:var(--muted);margin:10px 0 0}
+.actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px}
+button{border:0;border-radius:14px;padding:13px 20px;font:inherit;font-weight:850;cursor:pointer;transition:.2s}
+.primary{color:#21140d;background:linear-gradient(135deg,#ffb16d,#ff762b);box-shadow:0 8px 22px #ff762b35}.primary:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.secondary{color:#f5e8df;background:#ffffff12;border:1px solid #65544d}.secondary:disabled{opacity:.35;cursor:not-allowed}
+.success{display:none;text-align:center}.success .big{font-size:3rem}.success p{color:var(--muted);line-height:1.6}
+.status{min-height:22px;color:var(--orange2);font-size:.86rem;margin-top:12px}
+footer{text-align:center;color:#938780;font-size:.75rem;margin-top:25px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.art{max-width:450px;margin:0 auto;order:2}.card{order:1}.wrap{padding-top:20px}header{margin-bottom:20px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="spark s1">✦</div><div class="spark s2">✹</div><div class="spark s3">✧</div>
+<div class="wrap">
+<header><div class="kicker">special birthday mission · Bakugo edition</div><h1>Подарункове опитування 💥</h1><p>Щоб точно потрапити в десятку. І не отримати вибух у відповідь.</p></header>
+<div class="layout">
+<div class="card">
+  <div class="progress" id="progress"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+  <div class="counter" id="counter">Питання 1 з 3</div>
+  <form id="survey">
+    <section class="step active" data-step="0"><fieldset><legend>На день народження пані хоче отримати сюрприз чи вже спланований подарунок?</legend><div class="choices">
+      <label class="option"><input type="radio" name="kind" value="Сюрприз" required> Сюрприз — довіряю твоїй фантазії ✨</label>
+      <label class="option"><input type="radio" name="kind" value="Спланований подарунок"> Уже спланований подарунок — хочу конкретику 🎯</label>
+    </div></fieldset></section>
+    <section class="step" data-step="1" id="plannedStep"><fieldset><legend>Якщо спланований, то який?</legend><textarea id="planned" placeholder="Назва, посилання або просто опис ідеї…"></textarea><p class="hint">Можна без натяків — я постараюся правильно зрозуміти 😌</p></fieldset></section>
+    <section class="step" data-step="2" id="surpriseStep"><fieldset><legend>Якщо сюрприз, то що ти хотіла б найбільше?</legend><div class="choices">
+      <label class="option"><input type="radio" name="surprise" value="Книгу"> Книгу 📚</label>
+      <label class="option"><input type="radio" name="surprise" value="Щось матеріальне, але не книгу"> Щось матеріальне, але не книгу 🎁</label>
+      <label class="option"><input type="radio" name="surprise" value="Байдуже — головне сюрприз"> Байдуже — головне, щоб був сюрприз 💫</label>
+    </div></fieldset></section>
+    <section class="step" data-step="3"><fieldset><legend>Це має бути серйозний подарунок чи більше прикольна фігня на мій розгляд?)</legend><div class="choices">
+      <label class="option"><input type="radio" name="vibe" value="Серйозний подарунок" required> Серйозний подарунок — без клоунади 😌</label>
+      <label class="option"><input type="radio" name="vibe" value="Прикольна фігня на твій розгляд"> Прикольна фігня на твій розгляд — здивуй мене 😂</label>
+      <label class="option"><input type="radio" name="vibe" value="Мікс серйозного й прикольного"> Золота середина: щось між цими варіантами 🪄</label>
+    </div></fieldset></section>
+    <div class="success" id="success"><div class="big">💣💌</div><h2>Місію виконано!</h2><p>Відповіді відправляються у секретний штаб подарунків.</p><div class="status" id="status"></div></div>
+    <div class="actions" id="actions"><button class="secondary" type="button" id="back" disabled>← Назад</button><button class="primary" type="button" id="next">Далі →</button></div>
+  </form>
+</div>
+<div class="art"><img src="bakugo-art.png" alt="Кацукі Бакуґо з подарунком у стилі аніме"></div>
+</div>
+<footer>зроблено з вибуховою турботою ♡</footer>
+</div>
+<script>
+(() => {
+  // Встав сюди URL вебзастосунку Apps Script після розгортання.
+  const SCRIPT_URL = "ВСТАВТЕ_URL_ВЕБЗАСТОСУНКУ_APPS_SCRIPT";
+  const form=document.getElementById('survey'),steps=[...document.querySelectorAll('.step')],dots=[...document.querySelectorAll('.dot')];
+  const next=document.getElementById('next'),back=document.getElementById('back'),actions=document.getElementById('actions');
+  let route=[0,2,3],index=0;
+  const val=n=>form.querySelector(`input[name="${n}"]:checked`)?.value||'';
+  function setRoute(){route=[0,val('kind')==='Спланований подарунок'?1:2,3];}
+  function render(){
+    steps.forEach(s=>s.classList.remove('active'));steps[route[index]].classList.add('active');
+    dots.forEach((d,i)=>d.classList.toggle('active',i<=index));
+    document.getElementById('counter').textContent=`Питання ${index+1} з ${route.length}`;
+    back.disabled=index===0;next.textContent=index===route.length-1?'Відправити 💥':'Далі →';
+  }
+  form.addEventListener('change',e=>{if(e.target.name==='kind'){setRoute();}});
+  function answers(){return {
+    kind:val('kind'),
+    plannedGift:val('kind')==='Спланований подарунок'?document.getElementById('planned').value.trim():'',
+    surprisePreference:val('kind')==='Сюрприз'?val('surprise'):'',
+    giftStyle:val('vibe')
+  };}
+  next.addEventListener('click',async()=>{
+    const active=route[index];
+    if(active===0&&!val('kind'))return alert('Обери один із варіантів 😊');
+    if(active===1&&!document.getElementById('planned').value.trim())return alert('Напиши, який подарунок маєш на думці.');
+    if(active===2&&!val('surprise'))return alert('Обери, що тобі більше до душі 😊');
+    if(active===3&&!val('vibe'))return alert('Обери настрій подарунка 😊');
+    if(index<route.length-1){index++;render();return;}
+    if(!SCRIPT_URL.startsWith('https://script.google.com/macros/s/'))return alert('Потрібно спочатку вставити URL Apps Script у код сайту (SCRIPT_URL).');
+    next.disabled=true;next.textContent='Відправляю…';
+    try{
+      // text/plain + no-cors надсилає POST без CORS preflight до Apps Script.
+      await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(answers())});
+      steps.forEach(s=>s.classList.remove('active'));document.getElementById('success').style.display='block';
+      actions.style.display='none';document.getElementById('counter').textContent='Готово!';
+      document.getElementById('status').textContent='Запит на збереження відправлено. Дякую за відповіді! ♡';
+    }catch(err){
+      next.disabled=false;next.textContent='Спробувати ще раз';document.getElementById('status').textContent='Не вдалося відправити. Перевір інтернет і спробуй ще раз.';
+    }
+  });
+  back.addEventListener('click',()=>{if(index>0){index--;render();}});
+  setRoute();render();
+})();
+</script>
+</body></html>
