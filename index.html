@@ -183,45 +183,121 @@ footer{text-align:center;color:#938780;font-size:.75rem;margin-top:25px}
 </script>
 <script>
 (() => {
-  // Встав сюди URL вебзастосунку Apps Script після розгортання.
-  const SCRIPT_URL = "https://script.google.com/u/0/home/projects/1O6vAwIc9eZFymHdW03TijeuDq-sTJc03swhlLxhAiUHXOZ5edlDuF8Is/edit";
-  const form=document.getElementById('survey'),steps=[...document.querySelectorAll('.step')],dots=[...document.querySelectorAll('.dot')];
-  const next=document.getElementById('next'),back=document.getElementById('back'),actions=document.getElementById('actions');
-  let route=[0,2,3],index=0;
+  // Встав сюди URL вебзастосунку Apps Script, який закінчується на /exec.
+  const SCRIPT_URL = "ВСТАВ_СЮДИ_URL_ВЕБЗАСТОСУНКУ_EXEC";
+
+  const form=document.getElementById('survey'),
+        steps=[...document.querySelectorAll('.step')],
+        dots=[...document.querySelectorAll('.dot')],
+        next=document.getElementById('next'),
+        back=document.getElementById('back'),
+        actions=document.getElementById('actions');
+
+  let route=[0,2,3], index=0;
   const val=n=>form.querySelector(`input[name="${n}"]:checked`)?.value||'';
-  function setRoute(){route=[0,val('kind')==='Спланований подарунок'?1:2,3];}
-  function render(){
-    steps.forEach(s=>s.classList.remove('active'));steps[route[index]].classList.add('active');
-    dots.forEach((d,i)=>d.classList.toggle('active',i<=route[index]));
-    document.getElementById('counter').textContent=`Питання ${route[index]+1} з 4`;
-    back.disabled=index===0;next.textContent=index===route.length-1?'Відправити 💥':'Далі →';
+
+  function setRoute(){
+    route=[0,val('kind')==='Спланований подарунок'?1:2,3];
   }
-  form.addEventListener('change',e=>{if(e.target.name==='kind'){setRoute();}});
-  function answers(){return {
-    kind:val('kind'),
-    plannedGift:val('kind')==='Спланований подарунок'?document.getElementById('planned').value.trim():'',
-    surprisePreference:val('kind')==='Сюрприз'?val('surprise'):'',
-    giftStyle:val('vibe')
-  };}
+
+  function render(){
+    steps.forEach(s=>s.classList.remove('active'));
+    steps[route[index]].classList.add('active');
+    dots.forEach((d,i)=>d.classList.toggle('active',i<=index));
+    document.getElementById('counter').textContent=`Питання ${route[index]+1} з 4`;
+    back.disabled=index===0;
+    next.textContent=index===route.length-1?'Відправити 💥':'Далі →';
+  }
+
+  form.addEventListener('change',e=>{
+    if(e.target.name==='kind') setRoute();
+  });
+
+  function answers(){
+    return {
+      kind:val('kind'),
+      plannedGift:val('kind')==='Спланований подарунок'
+        ?document.getElementById('planned').value.trim():'',
+      surprisePreference:val('kind')==='Сюрприз'?val('surprise'):'',
+      giftStyle:val('vibe')
+    };
+  }
+
+  // JSONP: браузер отримує підтвердження від Apps Script без CORS/no-cors.
+  function sendAnswers(data){
+    return new Promise((resolve,reject)=>{
+      if(!SCRIPT_URL.startsWith('https://script.google.com/macros/s/') ||
+         !SCRIPT_URL.endsWith('/exec')){
+        reject(new Error('Вкажи правильний URL вебзастосунку Apps Script, який закінчується на /exec.'));
+        return;
+      }
+
+      const callbackName='surveyCallback_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+      const script=document.createElement('script');
+      const timeout=setTimeout(()=>{
+        cleanup();
+        reject(new Error('Сервер не відповів. Перевір URL і доступ до вебзастосунку.'));
+      },20000);
+
+      function cleanup(){
+        clearTimeout(timeout);
+        delete window[callbackName];
+        script.remove();
+      }
+
+      window[callbackName]=(result)=>{
+        cleanup();
+        if(result && result.success) resolve(result);
+        else reject(new Error(result?.message || 'Не вдалося зберегти відповідь.'));
+      };
+
+      script.onerror=()=>{
+        cleanup();
+        reject(new Error('Не вдалося підключитися до Google Apps Script.'));
+      };
+
+      const params=new URLSearchParams({
+        callback:callbackName,
+        data:JSON.stringify(data)
+      });
+      script.src=SCRIPT_URL+'?'+params.toString();
+      document.body.appendChild(script);
+    });
+  }
+
   next.addEventListener('click',async()=>{
     const active=route[index];
-    if(active===0&&!val('kind'))return alert('Обери один із варіантів 😊');
-    if(active===1&&!document.getElementById('planned').value.trim())return alert('Напиши, який подарунок маєш на думці.');
-    if(active===2&&!val('surprise'))return alert('Обери, що тобі більше до душі 😊');
-    if(active===3&&!val('vibe'))return alert('Обери настрій подарунка 😊');
-    if(index<route.length-1){index++;render();return;}
-    if(!SCRIPT_URL.startsWith('https://script.google.com/u/0/home/projects/1O6vAwIc9eZFymHdW03TijeuDq-sTJc03swhlLxhAiUHXOZ5edlDuF8Is/edit'))return alert('Потрібно спочатку вставити URL Apps Script у код сайту (SCRIPT_URL).');
-    next.disabled=true;next.textContent='Відправляю…';
+
+    if(active===0&&!val('kind')) return alert('Обери один із варіантів 😊');
+    if(active===1&&!document.getElementById('planned').value.trim())
+      return alert('Напиши, який подарунок маєш на думці.');
+    if(active===2&&!val('surprise')) return alert('Обери, що тобі більше до душі 😊');
+    if(active===3&&!val('vibe')) return alert('Обери настрій подарунка 😊');
+
+    if(index<route.length-1){
+      index++;
+      render();
+      return;
+    }
+
+    next.disabled=true;
+    next.textContent='Відправляю…';
+    document.getElementById('status').textContent='Зберігаю відповіді…';
+
     try{
-      // text/plain + no-cors надсилає POST без CORS preflight до Apps Script.
-      await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(answers())});
-      steps.forEach(s=>s.classList.remove('active'));document.getElementById('success').style.display='block';
-      actions.style.display='none';document.getElementById('counter').textContent='Готово!';
-      document.getElementById('status').textContent='Запит на збереження відправлено. Дякую за відповіді! ♡';
+      await sendAnswers(answers());
+      steps.forEach(s=>s.classList.remove('active'));
+      document.getElementById('success').style.display='block';
+      actions.style.display='none';
+      document.getElementById('counter').textContent='Готово!';
+      document.getElementById('status').textContent='Відповіді успішно збережено! Дякую 💜';
     }catch(err){
-      next.disabled=false;next.textContent='Спробувати ще раз';document.getElementById('status').textContent='Не вдалося відправити. Перевір інтернет і спробуй ще раз.';
+      next.disabled=false;
+      next.textContent='Спробувати ще раз';
+      document.getElementById('status').textContent=err.message;
     }
   });
+
   back.addEventListener('click',()=>{if(index>0){index--;render();}});
   setRoute();render();
 })();
